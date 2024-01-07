@@ -74,11 +74,19 @@ def get_store(name):
     abort(404,message="store not found")
 
 @app.get("/item/<string:item_id>")
-def get_items(item_id):
+def get_item(item_id):
     try:
         return items[item_id]
     except:
         abort(404,message="item not found")
+
+@app.delete("/item/<string:item_id>")
+def delete_item(item_id):
+    try:
+        del items[item_id]
+        return {"message": "Item deleted successfully"}
+    except KeyError:
+        abort(404,message="Item not Found")
 
 @app.get("/stores/<string:name>/item_list")
 def get_items_array(name):
@@ -87,3 +95,7 @@ def get_items_array(name):
             return store["items"]
         
     abort(404,message="item not found")
+
+@app.get("/item")
+def get_all_items():
+    return {"items":list(items.values())}
