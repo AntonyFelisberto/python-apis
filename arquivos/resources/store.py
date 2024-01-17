@@ -1,8 +1,10 @@
 import uuid
+from db import stores
 from flask import request
+from schemas import StoreSchema
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from db import stores
+
 
 blp = Blueprint("stores",__name__,description="Operations on stores")
 
@@ -26,11 +28,14 @@ class StoreList(MethodView):
     def get(self):
         return {"stores":list(stores.values())}
 
-    def post(self):
+    @blp.arguments(StoreSchema)
+    def post(self,store_data):
+        """
+            NAO MAIS NECESSARIO POR CONTA DO SCHEMA DE VALIDACAO
         store_data = request.get_json()
         if "name" not in store_data:
             abort(404,message="Name not included")
-        
+        """
         for store in stores.values():
             if store_data["name"] == store["name"]:
                 abort(404,message="Store already exists")
