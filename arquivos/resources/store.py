@@ -30,12 +30,6 @@ class StoreList(MethodView):
 
     @blp.arguments(StoreSchema)
     def post(self,store_data):
-        """
-            NAO MAIS NECESSARIO POR CONTA DO SCHEMA DE VALIDACAO
-        store_data = request.get_json()
-        if "name" not in store_data:
-            abort(404,message="Name not included")
-        """
         for store in stores.values():
             if store_data["name"] == store["name"]:
                 abort(404,message="Store already exists")

@@ -25,12 +25,6 @@ class Item(MethodView):
     
     @blp.arguments(ItemSchema)
     def put(self,item_data,item_id):
-        """
-            NAO MAIS NECESSARIO POR CONTA DO SCHEMA DE VALIDACAO
-        item_data = request.get_json()
-        if "price" not in item_data or "name" not in item_data:
-            abort(400,"Bad request ensure 'price' and 'name' are included in the json payload")
-        """
         try:
             item = items[item_id]
             item |= item_data
@@ -46,18 +40,6 @@ class Item(MethodView):
 
     @blp.arguments(ItemSchema)
     def post(self,item_data):
-        """
-            NAO MAIS NECESSARIO POR CONTA DO SCHEMA DE VALIDACAO
-        item_data = request.get_json()
-        if (
-            "price" not in item_data or 
-            "store_id" not in item_data or
-            "name" not in item_data
-            ):
-            abort(404,message="store not found")    #mesma coisa de return {"message":"store not found"},404
-
-        """
-
         for item in items.values():
             if (
                 item_data["name"] == item["name"] and
