@@ -4,3 +4,7 @@ pip install -r requirements.txt
 docker build -t flask-api .
 docker run -dp 5000:5000 flask-api
 docker run -dp 5000:5000 flask-api -w /arquivos -v "$(pwd):/app" flask-api
+
+flask db init
+flask db migrate
+flask db upgrade

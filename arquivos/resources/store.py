@@ -7,8 +7,6 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError,IntegrityError
 
-
-
 blp = Blueprint("stores",__name__,description="Operations on stores")
 
 @blp.route("/stores/<string:store_id>")
@@ -20,13 +18,15 @@ class Store(MethodView):
 
     def delete(self,store_id):
         item = StoreModel.query.get_or_404(store_id)
-        raise NotImplementedError("deleting a store is not implemented")
+        db.session.delete(item)
+        db.session.commit()
+        return {"message": "Store deleted successfully"}
 
 @blp.route("/store")
 class StoreList(MethodView):
     @blp.response(200,StoreSchema)
     def get(self):
-        return {"stores":list(stores.values())}
+        return StoreModel.query.all()
 
     @blp.arguments(StoreSchema)
     @blp.response(201,StoreSchema)

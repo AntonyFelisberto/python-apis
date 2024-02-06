@@ -3,13 +3,16 @@ import uuid
 import models
 from db import db
 from flask import Flask
+from flask_migrate import Migrate
 from flask_smorest import Api
+from dotenv import load_dotenv
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
 
 #flask run PARA RODAR O ARQUIVO, O CMD TEM QUE ESTAR APONTANDO PARA A PASTA QUE TEM O ARQUIVO
 def create_app(db_url=None):
     app = Flask(__name__)
+    load_dotenv()
 
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config['API_TITLE'] = "Stores Rest api"
@@ -20,8 +23,11 @@ def create_app(db_url=None):
     app.config["OPENAPI_SWAGGER_UI_URL"]= "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["SQLALCHEMY_DATABASE_URI"]=db_url or os.getenv("DATABASE_URL","sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
+    
     db.init_app(app)
 
+    migrate = Migrate(app,db)
+    
     api = Api(app)
 
     with app.app_context():
