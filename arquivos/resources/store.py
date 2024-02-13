@@ -1,6 +1,5 @@
 import uuid
-from db import stores,db
-from flask import request
+from db import db
 from models import StoreModel
 from schemas import StoreSchema
 from flask.views import MethodView
@@ -9,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError,IntegrityError
 
 blp = Blueprint("stores",__name__,description="Operations on stores")
 
-@blp.route("/stores/<string:store_id>")
+@blp.route("/stores/<int:store_id>")
 class Store(MethodView):
     @blp.response(200,StoreSchema)
     def get(self,store_id):
