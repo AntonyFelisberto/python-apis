@@ -8,6 +8,7 @@ from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
+from blocklist import BLOCKLIST
 from flask_jwt_extended import JWTManager
 
 #flask run PARA RODAR O ARQUIVO, O CMD TEM QUE ESTAR APONTANDO PARA A PASTA QUE TEM O ARQUIVO
@@ -30,6 +31,19 @@ def create_app(db_url=None):
 
     migrate = Migrate(app,db)
     jwt = JWTManager(app)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header,jwt_payload):
+        return jwt_payload["jti"] in BLOCKLIST
+
+    @jwt.revoked_token_loader
+    def revoked_token_callback(jwt_header,jwt_payload):
+        return(
+            jsonify(
+                {"description":"token has been revoked","error":"token revoked"}
+            ),
+            401
+        )
 
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity):
