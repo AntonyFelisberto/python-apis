@@ -10,3 +10,4 @@ requests
 gunicorn
 psycog2
 passlib
+rq

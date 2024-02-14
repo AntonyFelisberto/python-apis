@@ -1,15 +1,15 @@
 import os
 from db import db
-from flask import Flask,jsonify
-from flask_migrate import Migrate
 from flask_smorest import Api
 from dotenv import load_dotenv
-from resources.item import blp as ItemBlueprint
-from resources.store import blp as StoreBlueprint
+from blocklist import BLOCKLIST
+from flask import Flask,jsonify
+from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
-from blocklist import BLOCKLIST
-from flask_jwt_extended import JWTManager
+from resources.item import blp as ItemBlueprint
+from resources.store import blp as StoreBlueprint
 
 #flask run PARA RODAR O ARQUIVO, O CMD TEM QUE ESTAR APONTANDO PARA A PASTA QUE TEM O ARQUIVO
 def create_app(db_url=None):
@@ -60,6 +60,15 @@ def create_app(db_url=None):
             401
         )
     
+    @jwt.needs_fresh_token_loader
+    def token_not_fresh_callback(jwt_header,jwt_payload):
+        return(
+            jsonify(
+                {"message":"token not fresh","error":"token fresh required"}
+            ),
+            401
+        )
+
     @jwt.invalid_token_loader
     def invalid_token_callback(error):
         return(
